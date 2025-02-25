@@ -15,7 +15,7 @@ use bevy_a11y::{
 };
 use bevy_app::{App, Plugin, PostUpdate};
 use bevy_derive::{Deref, DerefMut};
-use bevy_ecs::{entity::EntityHashMap, prelude::*};
+use bevy_ecs::{entity::hash_map::EntityHashMap, prelude::*};
 use bevy_window::{PrimaryWindow, Window, WindowClosed};
 
 /// Maps window entities to their `AccessKit` [`Adapter`]s.
@@ -159,7 +159,7 @@ fn poll_receivers(
     for (_id, handler) in handlers.iter() {
         let mut handler = handler.lock().unwrap();
         while let Some(event) = handler.pop_front() {
-            actions.send(ActionRequestWrapper(event));
+            actions.write(ActionRequestWrapper(event));
         }
     }
 }
@@ -179,7 +179,7 @@ fn update_accessibility_nodes(
         Entity,
         &AccessibilityNode,
         Option<&Children>,
-        Option<&Parent>,
+        Option<&ChildOf>,
     )>,
     node_entities: Query<Entity, With<AccessibilityNode>>,
 ) {
@@ -218,7 +218,7 @@ fn update_adapter(
         Entity,
         &AccessibilityNode,
         Option<&Children>,
-        Option<&Parent>,
+        Option<&ChildOf>,
     )>,
     node_entities: Query<Entity, With<AccessibilityNode>>,
     primary_window: &Window,
@@ -253,12 +253,12 @@ fn update_adapter(
 #[inline]
 fn queue_node_for_update(
     node_entity: Entity,
-    parent: Option<&Parent>,
+    child_of: Option<&ChildOf>,
     node_entities: &Query<Entity, With<AccessibilityNode>>,
     window_children: &mut Vec<NodeId>,
 ) {
-    let should_push = if let Some(parent) = parent {
-        !node_entities.contains(parent.get())
+    let should_push = if let Some(child_of) = child_of {
+        !node_entities.contains(child_of.get())
     } else {
         true
     };

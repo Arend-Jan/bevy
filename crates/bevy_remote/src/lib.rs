@@ -137,7 +137,7 @@
 //!     see _below_ example for a query to list all the type names in **your** project.
 //!   - `option` (optional): An array of fully-qualified type names of components to fetch optionally.
 //!   - `has` (optional): An array of fully-qualified type names of components whose presence will be
-//!      reported as boolean values.
+//!     reported as boolean values.
 //! - `filter` (optional):
 //!   - `with` (optional): An array of fully-qualified type names of components that must be present
 //!     on entities in order for them to be included in results.
@@ -323,11 +323,13 @@ use bevy_app::{prelude::*, MainScheduleOrder};
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{
     entity::Entity,
+    resource::Resource,
     schedule::{IntoSystemConfigs, IntoSystemSetConfigs, ScheduleLabel, SystemSet},
-    system::{Commands, In, IntoSystem, ResMut, Resource, System, SystemId},
+    system::{Commands, In, IntoSystem, ResMut, System, SystemId},
     world::World,
 };
-use bevy_utils::{prelude::default, HashMap};
+use bevy_platform_support::collections::HashMap;
+use bevy_utils::prelude::default;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::sync::RwLock;
